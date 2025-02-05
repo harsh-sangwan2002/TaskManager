@@ -14,9 +14,9 @@ const closeButton = document.querySelector('.task-modal .close');
 const allPriorityRef = document.querySelectorAll('.task-modal .priority');
 const textareaRef = document.querySelector('.task-modal textarea');
 const showAllTasksRef = document.querySelector('.show-all');
+const sortTaskRef = document.querySelector('.sort');
 
 let modalFlag = false;
-let lockIconFlag = false;
 
 // Filter Tickets
 function applyFilter(priority) {
@@ -44,6 +44,13 @@ priorityFilterBoxRef.forEach(boxRef => {
 
 showAllTasksRef.addEventListener('click', e => {
     applyFilter(0);
+})
+
+// Sort Tasks
+sortTaskRef.addEventListener('click', e => {
+
+    tasks.sort((a, b) => b.priority - a.priority);
+    renderTasks();
 })
 
 // Display Modal
@@ -90,7 +97,8 @@ function removeModal() {
 textareaRef.addEventListener('keypress', e => {
 
     if (e.key == "Enter") {
-        let randomPriority = Math.floor(Math.random() * 3) + 1;
+        let randomPriority = tasks.length + 1;
+        randomPriority %= 4;
         newTask.priority = `${randomPriority}`;
         newTask.content = textareaRef.value;
         newTask.id = Math.floor(Math.random() * 1000);
@@ -104,11 +112,46 @@ textareaRef.addEventListener('keypress', e => {
     }
 })
 
-// Create Task
-function createTask(id, priority, content) {
+// Handle Drag and Drop
+taskContainer.addEventListener("dragover", (e) => {
+    e.preventDefault();
 
-    const taskRef = document.createElement('div');
-    taskRef.classList.add('task');
+    const afterElement = getDragAfterElement(taskContainer, e.clientY);
+    const draggable = document.querySelector(".dragging");
+
+    if (afterElement == null) {
+        taskContainer.appendChild(draggable);
+    } else {
+        taskContainer.insertBefore(draggable, afterElement);
+    }
+});
+
+// Function to determine the nearest element after drag position
+function getDragAfterElement(container, y) {
+    const draggableElements = [...container.querySelectorAll(".draggable:not(.dragging)")];
+
+    return draggableElements.reduce(
+        (closest, child) => {
+            const box = child.getBoundingClientRect();
+            const offset = y - (box.top + box.height / 2);
+
+            if (offset < 0 && offset > closest.offset) {
+                return { offset: offset, element: child };
+            }
+            return closest;
+        },
+        { offset: Number.NEGATIVE_INFINITY }
+    ).element;
+}
+
+// Create Task Function
+function createTask(id, priority, content) {
+    const taskRef = document.createElement("div");
+    taskRef.classList.add("task", "draggable");
+    taskRef.setAttribute("draggable", "true");
+    taskRef.setAttribute("data-id", id);
+    taskRef.setAttribute("data-priority", priority);
+
     taskRef.innerHTML = `
         <div class="task-priority priority p${priority}">${priority}</div>
         <div class="task-id">#${id}</div>
@@ -120,43 +163,50 @@ function createTask(id, priority, content) {
             <div class="delete-icon"><i class="fa-solid fa-trash fa-2x"></i></div>
         </div>
     `;
-    taskRef.setAttribute('data-id', id);
-    taskRef.setAttribute('data-priority', priority);
+
     taskContainer.appendChild(taskRef);
 
-    const lockUnlockIcon = taskRef.querySelector('.fa-solid');
-    const deleteIcon = taskRef.querySelector('.delete-icon');
-    const textareaContentRef = taskRef.querySelector('.task-content textarea');
+    // Drag Events
+    taskRef.addEventListener("dragstart", () => {
+        taskRef.classList.add("dragging");
+    });
 
-    lockUnlockIcon.addEventListener('click', e => {
+    taskRef.addEventListener("dragend", () => {
+        taskRef.classList.remove("dragging");
+        updateLocalStorage(); // Save new order
+    });
 
+    // Lock/Unlock Task
+    let lockIconFlag = true;
+    const lockUnlockIcon = taskRef.querySelector(".fa-solid");
+    const deleteIcon = taskRef.querySelector(".delete-icon");
+    const textareaContentRef = taskRef.querySelector(".task-content textarea");
+
+    lockUnlockIcon.addEventListener("click", () => {
         lockIconFlag = !lockIconFlag;
+        lockUnlockIcon.classList.toggle("fa-lock", lockIconFlag);
+        lockUnlockIcon.classList.toggle("fa-unlock", !lockIconFlag);
+        textareaContentRef.disabled = lockIconFlag;
+        if (!lockIconFlag) textareaContentRef.focus();
+    });
 
-        if (lockIconFlag) {
-            lockUnlockIcon.classList.remove('fa-lock');
-            lockUnlockIcon.classList.add('fa-unlock');
-            textareaContentRef.disabled = false;
-            textareaRef.focus();
-        }
-
-        else {
-            lockUnlockIcon.classList.remove('fa-unlock');
-            lockUnlockIcon.classList.add('fa-lock');
-            textareaContentRef.disabled = true;
-        }
-    })
-
-    deleteIcon.addEventListener('click', e => {
+    // Delete Task
+    deleteIcon.addEventListener("click", () => {
         removeTask(taskRef, id);
         renderTasks();
-    })
+        updateLocalStorage();
+    });
 
-    taskRef.querySelector('.task-content textarea').addEventListener('change', e => {
+    // Update Task Content
+    textareaContentRef.addEventListener("change", (e) => {
         updateTask(id, e.target.value);
-    })
+        updateLocalStorage();
+    });
 
     updateLocalStorage();
 }
+
+
 
 function updateLocalStorage() {
     localStorage.setItem('tasks', JSON.stringify(tasks));
@@ -186,8 +236,6 @@ function removeTask(taskRef, id) {
 function renderTasks() {
 
     taskContainer.innerHTML = '';
-
-    tasks.sort((a, b) => a.priority - b.priority);
 
     tasks.forEach(task => {
         createTask(task.id, task.priority, task.content);
