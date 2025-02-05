@@ -9,6 +9,7 @@ A simple and intuitive task manager web application built using HTML, CSS, and J
 - **Apply Filters**: Filter tasks based on specific criteria to focus on what matters most.
 
 ## Demo
+[Visit My Website](https://harsh-sangwan2002.github.io/TaskManager/)
 
 <img src ="/image.webp">
 
