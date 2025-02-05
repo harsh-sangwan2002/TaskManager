@@ -14,7 +14,6 @@ const taskModal = document.querySelector('.task-modal');
 const closeButton = document.querySelector('.task-modal .close');
 const allPriorityRef = document.querySelectorAll('.task-modal .priority');
 const textareaRef = document.querySelector('.task-modal textarea');
-const readOnlyButtonRef = document.querySelector('.readonly-icon');
 const searchInputRef = document.querySelector('.search-input');
 
 let modalFlag = false;
@@ -112,12 +111,12 @@ function createTask(id, priority, content) {
     taskRef.setAttribute('data-priority', priority);
     taskContainer.appendChild(taskRef);
 
-    const deleteIcon = taskRef.querySelector('.task-delete-icon');
-
-    // Click on task to show details in the modal
-    taskRef.addEventListener('click', () => {
+    const priorityRef = taskRef.querySelector('.task-priority');
+    priorityRef.addEventListener('click', e => {
         showTaskDetails(id);
     });
+
+    const deleteIcon = taskRef.querySelector('.task-delete-icon');
 
     deleteIcon.addEventListener('click', e => {
         removeTask(taskRef, id);
@@ -177,17 +176,6 @@ function removeTask(taskRef, id) {
     taskRef.remove();
     updateLocalStorage();
 }
-
-readOnlyButtonRef.addEventListener('click', function (e) {
-    const readOnlyBtnClassList = readOnlyButtonRef.classList;
-    if (readOnlyBtnClassList.contains('selected')) {
-        readOnlyBtnClassList.remove('selected');
-        taskContainer.classList.remove('noneditable');
-    } else {
-        readOnlyBtnClassList.add('selected');
-        taskContainer.classList.add('noneditable');
-    }
-});
 
 // Render Tasks
 function renderTasks() {
