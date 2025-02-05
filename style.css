@@ -23,6 +23,7 @@ body {
 
 .filters {
     display: flex;
+    align-items: center;
     gap: 1rem;
     margin-left: 3rem;
 }
@@ -31,12 +32,21 @@ body {
     height: 4rem;
     width: 8rem;
     border-radius: 5px;
-    cursor: pointer;
-    transition: all 0.3s ease;
 }
 
-.priority:hover {
-    opacity: 0.8;
+.btn {
+    height: 4rem;
+    width: 12rem;
+    border-radius: 5px;
+    font-size: 1.2rem;
+    padding: 5px;
+    background-color: antiquewhite;
+    cursor: pointer;
+    transition: all 500ms ease-in-out;
+}
+
+.filters .btn:hover {
+    background-color: aquamarine
 }
 
 .actions {
@@ -56,30 +66,15 @@ body {
     color: green;
 }
 
-.readonly-icon {
+.delete-action {
     cursor: pointer;
     padding: 8px 10px;
     width: 3rem;
     font-size: 2rem;
 }
 
-.readonly-icon:hover {
+.delete-action:hover {
     color: red;
-}
-
-/* Search Input */
-.search-input {
-    padding: 10px;
-    font-size: 1.2rem;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    margin-left: 3rem;
-    width: 300px;
-    outline: none;
-}
-
-.search-input:focus {
-    border-color: #007bff;
 }
 
 /* Task Modal */
@@ -93,13 +88,14 @@ body {
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-    overflow-y: auto;
+    z-index: 1000;
 }
 
 .task-modal .left-section {
     flex: 1;
     display: flex;
     width: 70%;
+    position: relative;
 }
 
 .task-modal .left-section textarea {
@@ -109,7 +105,6 @@ body {
     border: 1px solid #000;
     outline: none;
     font-size: 2rem;
-    padding: 10px;
 }
 
 .task-modal .right-section {
@@ -128,12 +123,12 @@ body {
 
 .task-modal .left-section .close {
     position: absolute;
-    width: 30px;
-    height: 30px;
+    width: 20px;
+    height: 20px;
     background-color: black;
     color: red;
     border-radius: 50%;
-    font-size: 20px;
+    font-size: 14px;
     left: -10px;
     top: -10px;
     display: flex;
@@ -142,7 +137,6 @@ body {
     cursor: pointer;
 }
 
-/* Priority Styles */
 .priority.p1 {
     background-color: pink;
 }
@@ -152,7 +146,7 @@ body {
 }
 
 .priority.p3 {
-    background-color: rgb(149, 244, 149);
+    background-color: cyan;
 }
 
 .priority.p4 {
@@ -169,7 +163,6 @@ body {
 
 .selected {
     border: 1px solid grey;
-    color: red;
 }
 
 /* Task Container */
@@ -178,10 +171,9 @@ body {
     padding: 1rem;
     margin-top: 5rem;
     display: flex;
-    gap: 2rem;
+    gap: 5rem;
     flex-wrap: wrap;
     padding: 10px;
-    cursor: pointer;
 }
 
 .task {
@@ -189,11 +181,7 @@ body {
     background-color: aquamarine;
     border-radius: 5px;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s ease;
-}
-
-.task:hover {
-    transform: scale(1.05);
+    position: relative;
 }
 
 .task-priority {
@@ -208,49 +196,28 @@ body {
     color: #fff;
 }
 
-.task-content textarea {
-    padding: 5px 10px;
-    font-size: 1.5rem;
-    resize: none;
-    outline: none;
-    border: none;
-    height: 200px;
+.task textarea {
+    height: 150px;
     width: 100%;
+    outline: none;
+    resize: none;
+    border: none;
     background-color: aquamarine;
+    font-size: 1.5rem;
 }
 
-.task-delete-icon {
-    position: absolute;
-    bottom: 3px;
-    right: 10px;
+.task .icons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 2rem;
+    margin: 0.5rem 1rem;
     cursor: pointer;
 }
 
-.task-delete-icon:hover {
+.lock-unlock-icon:hover {
+    color: darkgreen;
+}
+
+.delete-icon:hover {
     color: red;
-}
-
-.noneditable {
-    display: none;
-}
-
-.noneditable .task-content textarea {
-    pointer-events: none;
-}
-
-/* Responsive Design for Smaller Screens */
-@media screen and (max-width: 768px) {
-    .task-container {
-        flex-direction: column;
-        gap: 1rem;
-    }
-
-    .task {
-        width: 100%;
-    }
-
-    .task-modal {
-        width: 80%;
-        height: auto;
-    }
 }
