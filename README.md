@@ -1,6 +1,6 @@
-# Kanban Board
+# Task Manager
 
-A simple and intuitive Kanban Board web application built using HTML, CSS, and JavaScript. This project allows users to create tasks, delete tasks, and apply filters to organize and manage their workflow efficiently.
+A simple and intuitive task manager web application built using HTML, CSS, and JavaScript. This project allows users to create tasks, delete tasks, and apply filters to organize and manage their workflow efficiently.
 
 ## Features
 
@@ -25,13 +25,13 @@ You only need a web browser to run this project. No additional software is requi
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/harsh-sangwan2002/kanban-board.git
+   git clone https://github.com/harsh-sangwan2002/TaskManager.git
    ```
 
 2. Navigate to the project directory:
 
    ```bash
-   cd kanban-board
+   cd TaskManager
    ```
 
 3. Open the `index.html` file in your preferred web browser:
@@ -64,11 +64,6 @@ kanban-board/
 - **HTML**: For structuring the web page.
 - **CSS**: For styling and layout.
 - **JavaScript**: For dynamic functionality and interactivity.
-
-## Future Enhancements
-
-- Add drag-and-drop functionality for tasks.
-- Implement task editing.
 
 ## Contributing
 
